@@ -1,113 +1,213 @@
-import Image from "next/image";
+"use client";
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router'; // Import useRouter
+import { Button, Col, Row } from 'antd';
+import { Input } from 'antd';
+import { RedEnvelopeOutlined, LockOutlined, EyeTwoTone, EyeInvisibleOutlined } from '@ant-design/icons';
+import loginImage from "./assets/login.jpg"
+import Image from 'next/image';
+import { useForm } from "react-hook-form";
+import './login/login.css';
 
-export default function Home() {
+const Login = () => {
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm()
+
+
+  const onSubmit = (data) => console.log(data)
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginStatus, setLoginStatus] = useState('');
+
+
+  const [loginInfoData, setLoginInfoData] = useState([]);
+  useEffect(() => {
+    fetch('./loginInfo.json')
+      .then(res => res.json())
+      .then(data => setLoginInfoData(data))
+  }, [])
+
+  // const router = useRouter(); // Create a router instance
+
+  const handleLogin = (event) => {
+    event.preventDefault(); // Prevent the default form submission behavior
+
+    // Check if the entered credentials match the dummy data
+    const user = loginInfoData.find(user => user.email === email && user.password === password);
+    if (user) {
+      setLoginStatus('Login Successful!');
+      // router.push('/dashboard').catch(err => {
+      //     console.error("Failed to navigate:", err);
+      // });
+      window.location.href = '/projects';
+
+    } else {
+      setLoginStatus('Login Failed: Incorrect credentials.');
+    }
+  };
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
+    <Row
+      justify="center"
+      align="middle"
+      style={{ minHeight: "100vh", borderRadius: "10px" }}
+    >
+      <Col xs={12} sm={12} md={10} lg={10} xl={8}>
+        <Image src={loginImage} width={500} className='rounded-l-lg' alt='login image' />
+      </Col>
+      <Col xs={12} sm={12} md={12} lg={8} xl={8}>
+
+        <div style={{ padding: "100px 80px", backgroundColor: "white", width: "100%" }} className='rounded-r-lg'>
+
+          <p style={{ fontSize: "30px", fontWeight: "bold", textAlign: "center", marginBottom: '50px' }}>Sign In</p>
+          {/* <form onSubmit={handleSubmit(onSubmit)} style={{}}>
+                        
+                        <Input
+                            placeholder="Enter your email address"
+                            variant={errors.email ? "" : "borderless"}
+                            suffix={
+                                <RedEnvelopeOutlined
+                                    style={{
+                                        color: 'rgba(0,0,0,.25)',
+                                    }}
+                                />
+                            }
+                            style={{
+                                borderBottom: "1px solid #bfbfbf",
+                                borderRadius: 0,
+                                padding: 0,
+                                marginTop: "40px"
+                            }}
+                            {...register("email"
+                                // , { required: "Email Address is required" }
+                            )}
+                        />
+                        {Object.keys(errors).length ? (
+                            <>
+                                {errors.email ? (
+                                    <>
+                                        {/* {document.getElementById('email').classList.add('error-input')} */}
+          {/* <p style={{ color: 'red', fontSize: '13px', letterSpacing: '1.5px', width: "auto", pointerEvents: "none" }}>{errors.email?.message}</p> */}
+          {/* </> */}
+          {/* ) : ( */}
+          {/* <> */}
+          {/* {!errors.email && document.getElementById('email').classList.remove('error-input')} */}
+          {/* <p style={{ fontSize: "13px", color: "white" }}>*</p> */}
+          {/* </> */}
+          {/* )} */}
+          {/* </> */}
+          {/* ) : <p style={{ fontSize: "13px", color: "white" }}>*</p> */}
+          {/* } */}
+          {/* {errors.email && <p style={{ color: "red", fontSize: "12px" }}>{errors.email.message}</p>} */}
+
+          {/* <Input.Password
+                            type='password'
+                            placeholder="Enter password"
+                            variant={errors.password ? "" : "borderless"} */}
+          {/* // iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)} */}
+          {/* suffix={
+                                <LockOutlined
+                                    style={{
+                                        color: 'rgba(0,0,0,.25)',
+                                    }}
+                                />
+                            }
+                            style={{
+                                borderBottom: "1px solid #bfbfbf",
+                                borderRadius: 0,
+                                padding: 0,
+                                marginTop: "40px"
+                            }}
+                            {...register("password"
+                                // , { required: "Password is required" }
+                            )}
+                        /> */}
+          {/* {Object.keys(errors).length ? (
+                            <>
+                                {errors.password ? (
+                                    <>
+                                        {/* {document.getElementById('password').classList.add('error-input')} */}
+          {/* <p style={{ color: 'red', fontSize: '13px', letterSpacing: '1.5px', width: "auto", pointerEvents: "none" }}>{errors.password?.message}</p> */}
+          {/* </> */}
+          {/* ) : ( */}
+          {/* <> */}
+          {/* {!errors.password && document.getElementById('password').classList.remove('error-input')} */}
+          {/* <p style={{ fontSize: "13px", color: "white" }}>*</p> */}
+          {/* </> */}
+          {/* )} */}
+          {/* </> */}
+          {/* ) : <p style={{ fontSize: "13px", color: "white" }}>*</p> */}
+          {/* } */}
+
+          {/* <Button type="primary" shape="circle" size={'large'} > Login</Button> */}
+
+          {/* <div style={{ margin: "0 80px" }}>
+                            <Input
+                                style={{
+                                    marginTop: "50px",
+                                    backgroundColor: "black",
+                                    borderRadius: "20px",
+                                    color: "white",
+                                    fontWeight: "semibold",
+                                    paddingTop: "10px",
+                                    paddingBottom: "10px",
+                                    letterSpacing: '1.5px',
+                                    textTransform: "uppercase"
+                                }}
+                                type="submit"
+                                value='Login' />
+                        </div> */}
+          {/* </form>  */}
+          <form onSubmit={handleLogin}>
+            <input
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              required
+              style={{
+                width: '100%',
+                padding: '8px 0 8px 0',
+                borderBottom: '1px solid black',
+                marginBottom: '30px'
+              }}
             />
-          </a>
+            <input
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              required
+              style={{
+                width: '100%',
+                padding: '8px 0 8px 0',
+                borderBottom: '1px solid black',
+                marginBottom: '40px'
+              }}
+            />
+            <input
+              type="submit"
+              value="Login"
+              style={{
+                margin: "10px 0",
+                backgroundColor: "black",
+                color: "white",
+                borderRadius: "20px",
+                padding: "10px 20px"
+              }}
+            />
+          </form>
+          {loginStatus && <p>{loginStatus}</p>}
         </div>
-      </div>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      </Col>
+    </Row>
   );
-}
+};
+
+export default Login;
